@@ -31,19 +31,19 @@ export default function MeetupsPage() {
       subtitle="Explore active and upcoming meetup cards with activity filters."
     >
       <SectionHeader
-        title="3. View Active / Upcoming Meetups"
-        subtitle="Explore card-based meetup feeds with activity filters."
+        title="Active + Upcoming Meetup Feed"
+        subtitle="Discover card-based meetup stories and narrow by activity."
       />
 
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="card-base mb-6 flex flex-wrap gap-2 p-3">
         {allActivities.map((item) => (
           <button
             key={item}
             onClick={() => setActivity(item)}
             className={`rounded-full px-4 py-2 text-sm font-medium transition ${
               activity === item
-                ? "bg-violet-600 text-white shadow-lg shadow-violet-600/30"
-                : "border border-slate-200 bg-white text-slate-700 hover:border-violet-300"
+                ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-violet-600/30"
+                : "border border-slate-200 bg-white text-slate-700 hover:border-violet-300 hover:bg-violet-50"
             }`}
           >
             {item}

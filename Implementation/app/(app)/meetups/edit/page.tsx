@@ -36,12 +36,11 @@ export default function EditMeetupPage() {
   return (
     <LayoutShell
       title="6. Edit Meetup"
-      subtitle="Preload and update meetup details quickly."
+      subtitle="Preload a meetup and tune details with confidence."
     >
-
-      <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="card-base space-y-6 p-6 md:p-7">
         <div className="grid gap-4 md:grid-cols-2">
-          <label className="space-y-2 text-sm font-medium text-slate-700">
+          <label className="form-label">
             Select meetup
             <select
               value={selectedMeetupId}
@@ -55,7 +54,7 @@ export default function EditMeetupPage() {
                   setDescription(next.description);
                 }
               }}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+              className="input-field"
             >
               {meetups.map((meetup) => (
                 <option key={meetup.id} value={meetup.id}>
@@ -67,7 +66,7 @@ export default function EditMeetupPage() {
           <div className="flex items-end">
             <button
               onClick={hydrateFromSelected}
-              className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:border-violet-300 hover:bg-violet-50"
+              className="btn-secondary"
             >
               Reload selected meetup
             </button>
@@ -75,49 +74,48 @@ export default function EditMeetupPage() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <label className="space-y-2 text-sm font-medium text-slate-700">
+          <label className="form-label">
             Title
             <input
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+              className="input-field"
             />
           </label>
-          <label className="space-y-2 text-sm font-medium text-slate-700">
+          <label className="form-label">
             Time
             <input
               value={time}
               onChange={(event) => setTime(event.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+              className="input-field"
             />
           </label>
-          <label className="space-y-2 text-sm font-medium text-slate-700">
+          <label className="form-label">
             Capacity
             <input
               type="number"
               value={capacity}
               onChange={(event) => setCapacity(Number(event.target.value))}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+              className="input-field"
             />
           </label>
         </div>
 
-        <label className="space-y-2 text-sm font-medium text-slate-700">
+        <label className="form-label">
           Description
           <textarea
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             rows={4}
-            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+            className="input-field"
           />
         </label>
 
-        <button
-          onClick={onSave}
-          className="rounded-2xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-violet-700"
-        >
-          Save changes
-        </button>
+        <div className="flex justify-end">
+          <button onClick={onSave} className="btn-primary">
+            Save changes
+          </button>
+        </div>
       </section>
 
       {message ? (

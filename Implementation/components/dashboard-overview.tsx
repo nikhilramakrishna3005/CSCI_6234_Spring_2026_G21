@@ -11,7 +11,9 @@ import { StatusBadge } from "@/components/status-badge";
 export function DashboardOverview() {
   const { currentUser, users, meetups, notifications } = useAppState();
 
-  const onlineUsers = users.filter((user) => user.availability === "ONLINE");
+  const onlineUsers = users.filter(
+    (user) => user.availability === "ONLINE" && user.id !== currentUser?.id,
+  );
   const activeMeetups = meetups.filter((meetup) => meetup.visibility === "ACTIVE");
   const upcomingMeetups = meetups.filter((meetup) => meetup.visibility === "UPCOMING");
   const pendingInvites = useMemo(
@@ -26,22 +28,26 @@ export function DashboardOverview() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-3xl border border-white/80 bg-white/90 p-6 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-4">
+      <section className="card-base relative overflow-hidden p-6">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-indigo-100/80 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-violet-100/75 blur-3xl" />
+        <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">
-              Welcome back, {currentUser?.name ?? "Explorer"}.
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-600">MicroMeet Dashboard</p>
+            <h1 className="mt-2 text-2xl font-semibold text-slate-900 md:text-3xl">
+              Welcome back, {currentUser?.name ?? "Explorer"}
             </h1>
-            <p className="mt-1 text-sm text-slate-500">
-              Discover nearby people and spin up instant social moments.
+            <p className="mt-2 max-w-2xl text-sm text-slate-600">
+              Discover nearby online people, manage invitations, and run spontaneous meetups with a polished social workflow.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white/90 px-3 py-2">
             <StatusBadge label={currentUser?.availability ?? "OFFLINE"} />
-            <span className="text-sm text-slate-500">{currentUser?.email}</span>
+            <span className="text-xs text-slate-500">{currentUser?.email}</span>
           </div>
         </div>
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+
+        <div className="relative mt-5 grid gap-3 sm:grid-cols-3">
           <Link className="btn-primary justify-center text-center" href="/meetups/create">
             Create Meetup
           </Link>
@@ -52,6 +58,25 @@ export function DashboardOverview() {
             View Profile
           </Link>
         </div>
+
+        <div className="relative mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="metric-card">
+            <p className="text-[11px] uppercase tracking-wide text-slate-500">Online Nearby</p>
+            <p className="mt-1 text-2xl font-semibold text-slate-900">{onlineUsers.length}</p>
+          </div>
+          <div className="metric-card">
+            <p className="text-[11px] uppercase tracking-wide text-slate-500">Active Meetups</p>
+            <p className="mt-1 text-2xl font-semibold text-slate-900">{activeMeetups.length}</p>
+          </div>
+          <div className="metric-card">
+            <p className="text-[11px] uppercase tracking-wide text-slate-500">Upcoming Meetups</p>
+            <p className="mt-1 text-2xl font-semibold text-slate-900">{upcomingMeetups.length}</p>
+          </div>
+          <div className="metric-card">
+            <p className="text-[11px] uppercase tracking-wide text-slate-500">Notifications</p>
+            <p className="mt-1 text-2xl font-semibold text-slate-900">{notifications.length}</p>
+          </div>
+        </div>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
@@ -59,7 +84,7 @@ export function DashboardOverview() {
           <SectionHeader
             title="Nearby Online People"
             subtitle="Live status around you right now"
-            action={<Link href="/participants" className="text-sm text-indigo-600">Invite</Link>}
+            action={<Link href="/participants" className="btn-ghost">Invite</Link>}
           />
           <NearbyUsers users={onlineUsers} />
         </div>
@@ -73,11 +98,11 @@ export function DashboardOverview() {
               pendingInvites.slice(0, 4).map(({ meetup, participant }) => (
                 <div
                   key={participant.id}
-                  className="flex items-center justify-between rounded-2xl border border-slate-200/80 bg-slate-50/80 px-4 py-3"
+                  className="flex items-center justify-between rounded-2xl border border-slate-200/80 bg-slate-50/80 px-4 py-3 shadow-sm"
                 >
                   <div>
                     <p className="text-sm font-medium text-slate-800">{meetup.title}</p>
-                    <p className="text-xs text-slate-500">{participant.userId} requested access</p>
+                    <p className="text-xs text-slate-500">{participant.userId} requested access • {meetup.time}</p>
                   </div>
                   <StatusBadge label="REQUESTED" />
                 </div>
@@ -112,13 +137,13 @@ export function DashboardOverview() {
         <SectionHeader
           title="Notifications Preview"
           subtitle="Latest updates from your network"
-          action={<Link href="/notifications" className="text-sm text-indigo-600">View all</Link>}
+          action={<Link href="/notifications" className="btn-ghost">View all</Link>}
         />
         <div className="space-y-2">
           {notifications.slice(0, 4).map((notification) => (
             <div
               key={notification.id}
-              className="flex items-start justify-between rounded-2xl border border-slate-200/80 bg-white px-4 py-3"
+              className="flex items-start justify-between rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm"
             >
               <div>
                 <p className="text-sm font-medium text-slate-800">{notification.message}</p>

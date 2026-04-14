@@ -7,7 +7,7 @@ export default function DashboardPage() {
   return (
     <LayoutShell
       title="Dashboard"
-      subtitle="Command center for all 9 MicroMeet use cases in one social-style experience."
+      subtitle="Command center for discovery, meetup creation, participation workflows, and notifications."
     >
       <DashboardOverview />
     </LayoutShell>

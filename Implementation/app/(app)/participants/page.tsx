@@ -23,13 +23,11 @@ export default function ParticipantsPage() {
   };
 
   return (
-    <LayoutShell>
-      <SectionHeader
-        title="7. Invite / Approve Participants"
-        subtitle="Invite nearby users and approve pending requests."
-      />
-
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <LayoutShell
+      title="7. Invite / Approve Participants"
+      subtitle="Manage candidate users and pending requests with clear status actions."
+    >
+      <section className="card-base space-y-4 p-6">
         <label className="space-y-2 text-sm font-medium text-slate-700">
           Select meetup
           <select
@@ -46,18 +44,24 @@ export default function ParticipantsPage() {
         </label>
       </section>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {users.map((user) => {
           const participation = selected?.participants.find((p) => p.userId === user.id);
           return (
             <article
               key={user.id}
-              className="space-y-3 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
+              className="card-base space-y-4 p-5"
             >
-              <UserAvatar user={user} />
+              <div className="flex items-center gap-3">
+                <UserAvatar user={user} />
+                <div>
+                  <p className="text-sm font-semibold text-slate-800">{user.name}</p>
+                  <p className="text-xs text-slate-500">{user.email}</p>
+                </div>
+              </div>
               <div className="flex items-center justify-between">
                 <StatusBadge label={participation?.status ?? "PENDING"} />
-                <span className="text-xs text-slate-500">{user.id}</span>
+                <span className="text-xs text-slate-500">@{user.username}</span>
               </div>
               <div className="flex gap-2">
                 <button
@@ -79,7 +83,7 @@ export default function ParticipantsPage() {
       </div>
 
       {message ? (
-        <p className="mt-6 rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-700">
+        <p className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-700">
           {message}
         </p>
       ) : null}

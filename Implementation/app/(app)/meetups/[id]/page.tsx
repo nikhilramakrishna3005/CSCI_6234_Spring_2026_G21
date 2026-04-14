@@ -45,7 +45,7 @@ export default function MeetupDetailsPage() {
       <SectionHeader title={meetup.title} subtitle={meetup.description} />
 
       <div className="grid gap-6 lg:grid-cols-[1.3fr,1fr]">
-        <section className="space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="card-base space-y-5 p-6">
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-sm font-medium text-violet-600">{meetup.activityType}</p>
@@ -75,13 +75,13 @@ export default function MeetupDetailsPage() {
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => manageParticipants(meetup.id, "u-user-1", "INVITE")}
-                className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+                className="btn-primary"
               >
                 Invite user1
               </button>
               <button
                 onClick={() => manageParticipants(meetup.id, "u-user-2", "APPROVE")}
-                className="rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100"
+                className="btn-secondary"
               >
                 Approve user2
               </button>
@@ -90,13 +90,13 @@ export default function MeetupDetailsPage() {
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => respondToRequest(meetup.id, currentUser?.id ?? "", "ACCEPT")}
-                className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+                className="rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
               >
                 Accept invite
               </button>
               <button
                 onClick={() => respondToRequest(meetup.id, currentUser?.id ?? "", "DECLINE")}
-                className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100"
+                className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-100"
               >
                 Decline
               </button>
@@ -104,7 +104,7 @@ export default function MeetupDetailsPage() {
           )}
         </section>
 
-        <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="card-base space-y-4 p-6">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Host</h3>
           {host ? (
             <div className="flex items-center gap-3">

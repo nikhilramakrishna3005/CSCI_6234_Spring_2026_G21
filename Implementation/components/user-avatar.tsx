@@ -14,7 +14,7 @@ export function UserAvatar({ user }: UserAvatarProps) {
 
   return (
     <div
-      className={`relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br ${user.avatarGradient} text-sm font-semibold text-white`}
+      className={`relative flex h-12 w-12 items-center justify-center rounded-full border border-white/80 bg-gradient-to-br ${user.avatarGradient} text-sm font-semibold text-white shadow-md shadow-slate-300/40`}
     >
       {initials || "MM"}
       {user.availability === "ONLINE" ? (

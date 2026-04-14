@@ -54,12 +54,12 @@ export default function CreateMeetupPage() {
       title="6. Create Meetup"
       subtitle="Launch a polished, social-ready meetup in seconds."
     >
-      <section className="card-base p-6">
+      <section className="card-base p-8">
         <SectionHeader
           title="Create a New Meetup"
           subtitle="Title, activity type, schedule, capacity, description, and location."
         />
-        <form className="space-y-4" onSubmit={onCreate}>
+        <form className="space-y-5" onSubmit={onCreate}>
           <div className="grid gap-4 md:grid-cols-2">
             <label className="form-label">
               Title

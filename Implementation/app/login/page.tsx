@@ -37,7 +37,7 @@ export default function LoginPage() {
 
       <form
         onSubmit={onSubmit}
-        className="relative w-full max-w-md rounded-3xl border border-white/20 bg-slate-900/80 p-8 shadow-[0_28px_80px_rgba(15,23,42,0.7)] backdrop-blur"
+        className="relative w-full max-w-md rounded-4xl border border-white/20 bg-slate-900/85 p-8 shadow-[0_28px_80px_rgba(15,23,42,0.7)] backdrop-blur-xl md:p-10"
       >
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500 to-indigo-500 text-xl font-bold text-white">
@@ -55,7 +55,7 @@ export default function LoginPage() {
             <input
               value={username}
               onChange={(event) => setUsername(event.target.value)}
-              className="mt-2 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white outline-none transition focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/20"
+              className="mt-2 w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white outline-none transition focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/20"
             />
           </label>
           <label className="block text-sm font-medium text-slate-200">
@@ -64,12 +64,12 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-2 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white outline-none transition focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/20"
+              className="mt-2 w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white outline-none transition focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/20"
             />
           </label>
           <button
             type="submit"
-            className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-400"
+            className="inline-flex w-full items-center justify-center rounded-2xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-700/30 transition hover:-translate-y-0.5 hover:bg-indigo-400"
           >
             Authenticate User
           </button>

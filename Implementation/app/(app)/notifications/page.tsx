@@ -22,44 +22,51 @@ export default function NotificationsPage() {
   return (
     <LayoutShell
       title="9. Send Update Notifications"
-      subtitle="Browse all notifications and trigger update pushes."
+      subtitle="A clean, scrollable notification center with timestamped social updates."
     >
-      <SectionHeader
-        title="9. Send Update Notifications"
-        subtitle="Browse all notifications and trigger update pushes."
-      />
-
-      <div className="mb-5 flex items-center justify-between rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-        <p className="text-sm text-slate-600">
-          Notification center with timestamps, tags, and statuses.
-        </p>
-        <div className="flex flex-wrap items-center gap-2">
-          <input
-            value={meetupId}
-            onChange={(event) => setMeetupId(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
-            placeholder="meetup id"
-          />
-          <input
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
-            placeholder="notification message"
-          />
+      <section className="card-base p-6">
+        <SectionHeader
+          title="Notification Composer"
+          subtitle="Trigger a demo update to simulate live system and meetup announcements."
+        />
+        <div className="grid gap-3 md:grid-cols-[220px,1fr,auto] md:items-end">
+          <label className="form-label">
+            Meetup ID
+            <input
+              value={meetupId}
+              onChange={(event) => setMeetupId(event.target.value)}
+              className="input-field"
+              placeholder="meetup-1"
+            />
+          </label>
+          <label className="form-label">
+            Notification Message
+            <input
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              className="input-field"
+              placeholder="Host posted a fresh update."
+            />
+          </label>
           <button
             onClick={() => sendUpdateNotification(meetupId, message)}
-            className="rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700"
+            className="btn-primary md:h-12"
           >
             Send update
           </button>
         </div>
-      </div>
+      </section>
 
-      <div className="max-h-[68vh] space-y-3 overflow-y-auto pr-1">
+      <section className="card-base p-6">
+        <SectionHeader
+          title={`Notification Feed (${notifications.length})`}
+          subtitle="Tagged, timestamped events in a scrollable activity timeline."
+        />
+        <div className="max-h-[68vh] space-y-3 overflow-y-auto pr-1">
         {notifications.map((notification) => (
           <article
             key={notification.id}
-            className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
+            className="group rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white to-slate-50/70 p-5 shadow-sm transition hover:border-violet-200 hover:shadow-md"
           >
             <div className="mb-3 flex items-center justify-between">
               <StatusBadge label={notification.type} />
@@ -67,13 +74,17 @@ export default function NotificationsPage() {
                 {notification.createdAt}
               </p>
             </div>
-            <p className={`text-sm font-medium ${colors[notification.type] ?? "text-slate-700"}`}>
+            <p className={`text-sm font-medium leading-relaxed ${colors[notification.type] ?? "text-slate-700"}`}>
               {notification.message}
             </p>
-            <p className="mt-2 text-xs text-slate-500">{notification.id}</p>
+            <div className="mt-3 flex items-center justify-between">
+              <p className="text-xs text-slate-500">{notification.id}</p>
+              <span className="text-xs text-slate-400">{notification.read ? "Read" : "Unread"}</span>
+            </div>
           </article>
         ))}
-      </div>
+        </div>
+      </section>
     </LayoutShell>
   );
 }

@@ -14,8 +14,9 @@ export function NearbyUsers({ users }: NearbyUsersProps) {
       {users.map((user) => (
         <article
           key={user.id}
-          className="rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm"
+          className="group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
         >
+          <div className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-indigo-100/70 blur-2xl transition group-hover:bg-indigo-200/80" />
           <div className="mb-3 flex items-center gap-3">
             <UserAvatar user={user} />
             <div>
@@ -31,7 +32,7 @@ export function NearbyUsers({ users }: NearbyUsersProps) {
             {user.preferences.map((pref) => (
               <span
                 key={pref.id}
-                className="rounded-full bg-slate-100 px-2 py-1 text-xs text-slate-600"
+                className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-600"
               >
                 {pref.key}: {pref.value}
               </span>

@@ -66,13 +66,13 @@ export default function ResponsesPage() {
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => onChoice("ACCEPT")}
-            className="rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
+            className="btn-primary !from-emerald-500 !to-teal-500"
           >
             Accept
           </button>
           <button
             onClick={() => onChoice("DECLINE")}
-            className="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-3 text-sm font-semibold text-rose-700 hover:bg-rose-100"
+            className="btn-secondary border-rose-200 bg-rose-50 text-rose-700 hover:border-rose-300 hover:bg-rose-100"
           >
             Decline
           </button>
