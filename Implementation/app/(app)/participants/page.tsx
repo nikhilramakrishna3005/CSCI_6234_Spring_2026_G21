@@ -1,0 +1,88 @@
+"use client";
+
+import { useState } from "react";
+import { LayoutShell } from "@/components/layout-shell";
+import { SectionHeader } from "@/components/section-header";
+import { StatusBadge } from "@/components/status-badge";
+import { UserAvatar } from "@/components/user-avatar";
+import { useAppState } from "@/lib/app-state";
+
+export default function ParticipantsPage() {
+  const { meetups, users, manageParticipants } = useAppState();
+  const [meetupId, setMeetupId] = useState(meetups[0]?.id ?? "");
+  const [message, setMessage] = useState("");
+  const selected = meetups.find((meetup) => meetup.id === meetupId);
+
+  const onAction = (userId: string, action: "INVITE" | "APPROVE") => {
+    const updated = manageParticipants(meetupId, userId, action);
+    if (!updated) {
+      setMessage("Could not update participant status.");
+      return;
+    }
+      setMessage(`Action ${action} processed for ${userId} in ${updated.title}.`);
+  };
+
+  return (
+    <LayoutShell>
+      <SectionHeader
+        title="7. Invite / Approve Participants"
+        subtitle="Invite nearby users and approve pending requests."
+      />
+
+      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <label className="space-y-2 text-sm font-medium text-slate-700">
+          Select meetup
+          <select
+            value={meetupId}
+            onChange={(event) => setMeetupId(event.target.value)}
+            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+          >
+            {meetups.map((meetup) => (
+              <option key={meetup.id} value={meetup.id}>
+                {meetup.id} - {meetup.title}
+              </option>
+            ))}
+          </select>
+        </label>
+      </section>
+
+      <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {users.map((user) => {
+          const participation = selected?.participants.find((p) => p.userId === user.id);
+          return (
+            <article
+              key={user.id}
+              className="space-y-3 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
+            >
+              <UserAvatar user={user} />
+              <div className="flex items-center justify-between">
+                <StatusBadge label={participation?.status ?? "PENDING"} />
+                <span className="text-xs text-slate-500">{user.id}</span>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => onAction(user.id, "INVITE")}
+                  className="flex-1 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-semibold text-indigo-700 hover:bg-indigo-100"
+                >
+                  Invite
+                </button>
+                <button
+                  onClick={() => onAction(user.id, "APPROVE")}
+                  className="flex-1 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+                >
+                  Approve
+                </button>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      {message ? (
+        <p className="mt-6 rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-700">
+          {message}
+        </p>
+      ) : null}
+    </LayoutShell>
+  );
+}
