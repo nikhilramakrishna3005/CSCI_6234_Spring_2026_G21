@@ -98,14 +98,12 @@ public class DashboardFrame extends JFrame {
     }
 
     private void openProfilePanel() {
-        ProfilePanel panel = new ProfilePanel(profileService);
+        ProfilePanel panel = new ProfilePanel(profileService, loggedInUser);
         showPanelDialog("Manage Profile", panel, 520, 320);
     }
 
     private void openMeetupListPanel() {
         MeetupListPanel panel = new MeetupListPanel(meetupService);
-        List<Meetup> meetups = meetupService.getActiveUpcoming();
-        panel.setMeetups(meetups);
         showPanelDialog("Active / Upcoming Meetups", panel, 640, 420);
     }
 
