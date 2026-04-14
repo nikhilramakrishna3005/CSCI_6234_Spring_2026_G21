@@ -1,5 +1,6 @@
 package micromeet.gui;
 
+import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import micromeet.repository.MeetupRepository;
 import micromeet.repository.UserRepository;
@@ -30,14 +31,7 @@ public class MicroMeetApp {
     }
 
     public void start() {
-        LoginFrame loginFrame =
-                new LoginFrame(
-                        authService,
-                        profileService,
-                        meetupService,
-                        notificationService,
-                        userRepository,
-                        meetupRepository);
+        LoginFrame loginFrame = new LoginFrame(authService, this::showDashboard);
         loginFrame.setVisible(true);
     }
 
@@ -50,8 +44,17 @@ public class MicroMeetApp {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(
                 () -> {
+                    installLookAndFeel();
                     MicroMeetApp app = new MicroMeetApp();
                     app.start();
                 });
+    }
+
+    private static void installLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ignored) {
+            // Fallback to default look and feel.
+        }
     }
 }

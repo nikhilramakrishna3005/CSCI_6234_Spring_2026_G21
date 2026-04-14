@@ -1,66 +1,111 @@
 package micromeet.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import micromeet.repository.MeetupRepository;
-import micromeet.repository.UserRepository;
 import micromeet.service.AuthService;
-import micromeet.service.MeetupService;
-import micromeet.service.NotificationService;
-import micromeet.service.ProfileService;
 
 public class LoginFrame extends JFrame {
     private final AuthService authService;
-    private final ProfileService profileService;
-    private final MeetupService meetupService;
-    private final NotificationService notificationService;
-    private final UserRepository userRepository;
-    private final MeetupRepository meetupRepository;
+    private final Runnable onLoginSuccess;
 
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JButton loginButton;
+    private final JTextField usernameField;
+    private final JPasswordField passwordField;
+    private final JButton loginButton;
+    private final JLabel statusLabel;
 
-    public LoginFrame(
-            AuthService authService,
-            ProfileService profileService,
-            MeetupService meetupService,
-            NotificationService notificationService,
-            UserRepository userRepository,
-            MeetupRepository meetupRepository) {
+    public LoginFrame(AuthService authService, Runnable onLoginSuccess) {
         this.authService = authService;
-        this.profileService = profileService;
-        this.meetupService = meetupService;
-        this.notificationService = notificationService;
-        this.userRepository = userRepository;
-        this.meetupRepository = meetupRepository;
+        this.onLoginSuccess = onLoginSuccess;
+        this.usernameField = new JTextField(18);
+        this.passwordField = new JPasswordField(18);
+        this.loginButton = new JButton("Login");
+        this.statusLabel = new JLabel(" ");
         initializeUi();
+        bindActions();
     }
 
     private void initializeUi() {
-        setTitle("MicroMeet - Login");
-        setSize(420, 220);
+        setTitle("MicroMeet");
+        setSize(430, 260);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
 
-        JPanel formPanel = new JPanel();
-        formPanel.add(new JLabel("Username:"));
-        usernameField = new JTextField(20);
-        formPanel.add(usernameField);
+        JLabel titleLabel = new JLabel("MicroMeet Login", JLabel.CENTER);
+        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+        add(titleLabel, BorderLayout.NORTH);
 
-        formPanel.add(new JLabel("Password:"));
-        passwordField = new JPasswordField(20);
-        formPanel.add(passwordField);
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 6, 6, 6);
+        gbc.anchor = GridBagConstraints.WEST;
 
-        loginButton = new JButton("Login");
-        formPanel.add(loginButton);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(new JLabel("Username:"), gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(usernameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(new JLabel("Password:"), gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(passwordField, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        formPanel.add(loginButton, gbc);
 
         add(formPanel, BorderLayout.CENTER);
+
+        JPanel footerPanel = new JPanel(new BorderLayout());
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(0, 12, 10, 12));
+        statusLabel.setForeground(new Color(180, 0, 0));
+        footerPanel.add(statusLabel, BorderLayout.NORTH);
+        footerPanel.add(
+                new JLabel("Demo accounts: host1/pass123, user1/pass123, user2/pass123"),
+                BorderLayout.SOUTH);
+        add(footerPanel, BorderLayout.SOUTH);
+    }
+
+    private void bindActions() {
+        ActionListener loginAction = e -> authenticate();
+        loginButton.addActionListener(loginAction);
+        usernameField.addActionListener(loginAction);
+        passwordField.addActionListener(loginAction);
+    }
+
+    private void authenticate() {
+        String username = usernameField.getText().trim();
+        String password = new String(passwordField.getPassword());
+
+        if (authService.authenticate(username, password) == null) {
+            statusLabel.setForeground(new Color(180, 0, 0));
+            statusLabel.setText("Invalid username or password. Please try again.");
+            return;
+        }
+
+        statusLabel.setForeground(new Color(0, 128, 0));
+        statusLabel.setText("Login successful. Opening dashboard...");
+        dispose();
+        if (onLoginSuccess != null) {
+            onLoginSuccess.run();
+        }
     }
 }
