@@ -71,7 +71,7 @@ public class Main {
     }
 
     private void run() {
-        System.out.println("Welcome to MicroMeet Console App");
+        printBanner();
         System.out.println("Please log in to continue.");
 
         while (currentUser == null) {
@@ -117,10 +117,10 @@ public class Main {
                     break;
                 case "0":
                     running = false;
-                    System.out.println("Goodbye!");
+                    System.out.println("\nThank you for using MicroMeet. Goodbye!");
                     break;
                 default:
-                    System.out.println("Invalid option. Please choose 0-9.");
+                    System.out.println("[ERROR] Invalid option. Please choose 0-9.");
                     break;
             }
         }
@@ -188,12 +188,15 @@ public class Main {
                 profileView.showError("Invalid profile option.");
                 break;
         }
+        printDivider();
     }
 
     private void handleViewActiveUpcomingMeetups() {
         meetupListView.showTitle();
         List<Meetup> meetups = meetupService.getActiveUpcoming();
         meetupListView.displayMeetups(meetups);
+        meetupListView.showSuccess("Displayed " + meetups.size() + " meetup(s).");
+        printDivider();
     }
 
     private void handleViewMeetupDetails() {
@@ -205,6 +208,7 @@ public class Main {
             return;
         }
         meetupDetailView.displayMeetupDetails(meetup);
+        printDivider();
     }
 
     private void handleCreateMeetup() {
@@ -234,6 +238,7 @@ public class Main {
 
         createMeetupView.showSuccess("Meetup created.");
         createMeetupView.displayMeetupDetails(meetup);
+        printDivider();
     }
 
     private void handleEditMeetup() {
@@ -253,6 +258,7 @@ public class Main {
 
         editMeetupView.showSuccess("Meetup updated.");
         editMeetupView.displayMeetupDetails(updated);
+        printDivider();
     }
 
     private void handleManageParticipants() {
@@ -269,7 +275,9 @@ public class Main {
         }
 
         manageParticipantsView.showSuccess("Participant action completed.");
+        meetupDetailView.showTitle();
         meetupDetailView.displayMeetupDetails(meetup);
+        printDivider();
     }
 
     private void handleJoinResponse() {
@@ -286,20 +294,37 @@ public class Main {
 
         joinResponseView.showSuccess("Join response processed.");
         joinResponseView.displayMeetupDetails(meetup);
+        printDivider();
     }
 
     private void handleSendUpdateNotifications() {
+        System.out.println();
+        System.out.println("=======================================");
+        System.out.println("9) SEND UPDATE NOTIFICATIONS");
+        System.out.println("=======================================");
         String meetupId = prompt("Meetup ID: ");
         String message = prompt("Update message: ");
 
         notificationService.notifyParticipants(meetupId, message);
         int total = notificationService.processPendingUpdates();
+        System.out.println("[SUCCESS] Update notification sent.");
         System.out.println("Total notifications currently stored: " + total);
+        printDivider();
     }
 
     private void printMainMenu() {
         System.out.println();
-        System.out.println("=== Main Menu ===");
+        System.out.println("=======================================");
+        System.out.println("MICROMEET MAIN MENU");
+        System.out.println("=======================================");
+        if (currentUser != null) {
+            System.out.println(
+                    "Logged in as: "
+                            + currentUser.getName()
+                            + " ("
+                            + currentUser.getUserId()
+                            + ")");
+        }
         System.out.println("1. Authenticate User");
         System.out.println("2. Manage Profile & Preferences");
         System.out.println("3. View Active / Upcoming Meetups");
@@ -310,6 +335,7 @@ public class Main {
         System.out.println("8. Respond to Join Request");
         System.out.println("9. Send Update Notifications");
         System.out.println("0. Exit");
+        System.out.println("---------------------------------------");
     }
 
     private String prompt(String text) {
@@ -323,8 +349,21 @@ public class Main {
             try {
                 return Integer.parseInt(value);
             } catch (NumberFormatException ex) {
-                System.out.println("Please enter a valid number.");
+                System.out.println("[ERROR] Please enter a valid number.");
             }
         }
+    }
+
+    private void printBanner() {
+        System.out.println();
+        System.out.println("=======================================");
+        System.out.println("      WELCOME TO MICROMEET APP");
+        System.out.println("=======================================");
+        System.out.println("Demo accounts: host1/pass123, user1/pass123, user2/pass123");
+        System.out.println("---------------------------------------");
+    }
+
+    private void printDivider() {
+        System.out.println("---------------------------------------");
     }
 }

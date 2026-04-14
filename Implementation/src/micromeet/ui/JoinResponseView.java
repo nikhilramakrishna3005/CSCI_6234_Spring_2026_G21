@@ -4,7 +4,10 @@ import micromeet.entity.Meetup;
 
 public class JoinResponseView {
     public void showTitle() {
-        System.out.println("\n=== Join Response ===");
+        System.out.println();
+        System.out.println("========================================");
+        System.out.println("        JOIN REQUEST RESPONSE");
+        System.out.println("========================================");
     }
 
     public void showError(String message) {
@@ -20,7 +23,7 @@ public class JoinResponseView {
             showError("Meetup not found.");
             return;
         }
-        System.out.println("Meetup: " + meetup.getTitle() + " (" + meetup.getMeetupId() + ")");
-        System.out.println("Your response has been recorded.");
+        System.out.println("Meetup : " + meetup.getTitle() + " (" + meetup.getMeetupId() + ")");
+        System.out.println("Status : Response recorded successfully.");
     }
 }

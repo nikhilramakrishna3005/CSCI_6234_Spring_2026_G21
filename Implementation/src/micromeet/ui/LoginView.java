@@ -5,7 +5,9 @@ import micromeet.entity.User;
 public class LoginView {
     public void showTitle() {
         System.out.println();
-        System.out.println("=== Login ===");
+        System.out.println("====================================");
+        System.out.println("          AUTHENTICATE USER         ");
+        System.out.println("====================================");
     }
 
     public void showError(String message) {
@@ -18,9 +20,12 @@ public class LoginView {
 
     public void displayProfile(User user) {
         if (user == null) {
-            System.out.println("No user to display.");
+            showError("No user to display.");
             return;
         }
-        System.out.println("Logged in user: " + user.getName() + " (" + user.getEmail() + ")");
+        System.out.println("Logged in as:");
+        System.out.println(" - User ID : " + user.getUserId());
+        System.out.println(" - Name    : " + user.getName());
+        System.out.println(" - Email   : " + user.getEmail());
     }
 }

@@ -5,7 +5,9 @@ import micromeet.entity.Meetup;
 public class CreateMeetupView {
     public void showTitle() {
         System.out.println();
-        System.out.println("=== Create Meetup ===");
+        System.out.println("======================================");
+        System.out.println("         CREATE NEW MEETUP");
+        System.out.println("======================================");
     }
 
     public void showError(String message) {
@@ -22,11 +24,11 @@ public class CreateMeetupView {
             return;
         }
 
-        System.out.println("Created meetup:");
-        System.out.println("- ID: " + meetup.getMeetupId());
-        System.out.println("- Title: " + meetup.getTitle());
-        System.out.println("- Activity: " + meetup.getActivityType());
-        System.out.println("- Time: " + meetup.getTime());
-        System.out.println("- Capacity: " + meetup.getCapacity());
+        System.out.println("New meetup saved successfully:");
+        System.out.println("  ID       : " + meetup.getMeetupId());
+        System.out.println("  Title    : " + meetup.getTitle());
+        System.out.println("  Activity : " + meetup.getActivityType());
+        System.out.println("  Time     : " + meetup.getTime());
+        System.out.println("  Capacity : " + meetup.getCapacity());
     }
 }
