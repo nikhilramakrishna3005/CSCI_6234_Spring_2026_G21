@@ -4,15 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import micromeet.entity.Meetup;
-import micromeet.entity.Notification;
 import micromeet.entity.User;
 import micromeet.service.MeetupService;
 import micromeet.service.NotificationService;
@@ -140,22 +139,16 @@ public class DashboardFrame extends JFrame {
 
     private void openNotificationsPanel() {
         NotificationsPanel panel = new NotificationsPanel(notificationService);
-        List<Notification> notifications = notificationService.getAllNotifications();
-        JOptionPane.showMessageDialog(
-                this,
-                "Current notifications stored: " + notifications.size(),
-                "Send Update Notifications",
-                JOptionPane.INFORMATION_MESSAGE);
         showPanelDialog("Send Update Notifications", panel, 520, 320);
     }
 
     private void showPanelDialog(String title, JPanel panel, int width, int height) {
-        JFrame frame = new JFrame(title);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(width, height);
-        frame.setLocationRelativeTo(this);
-        frame.add(panel);
-        frame.setVisible(true);
+        JDialog dialog = new JDialog(this, title, true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setSize(width, height);
+        dialog.setLocationRelativeTo(this);
+        dialog.add(panel);
+        dialog.setVisible(true);
     }
 
     private void logout() {
