@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,18 +15,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import micromeet.entity.User;
 import micromeet.service.AuthService;
 
 public class LoginFrame extends JFrame {
     private final AuthService authService;
-    private final Runnable onLoginSuccess;
+    private final Consumer<User> onLoginSuccess;
 
     private final JTextField usernameField;
     private final JPasswordField passwordField;
     private final JButton loginButton;
     private final JLabel statusLabel;
 
-    public LoginFrame(AuthService authService, Runnable onLoginSuccess) {
+    public LoginFrame(AuthService authService, Consumer<User> onLoginSuccess) {
         this.authService = authService;
         this.onLoginSuccess = onLoginSuccess;
         this.usernameField = new JTextField(18);
@@ -95,7 +97,8 @@ public class LoginFrame extends JFrame {
         String username = usernameField.getText().trim();
         String password = new String(passwordField.getPassword());
 
-        if (authService.authenticate(username, password) == null) {
+        User authenticatedUser = authService.authenticate(username, password);
+        if (authenticatedUser == null) {
             statusLabel.setForeground(new Color(180, 0, 0));
             statusLabel.setText("Invalid username or password. Please try again.");
             return;
@@ -105,7 +108,7 @@ public class LoginFrame extends JFrame {
         statusLabel.setText("Login successful. Opening dashboard...");
         dispose();
         if (onLoginSuccess != null) {
-            onLoginSuccess.run();
+            onLoginSuccess.accept(authenticatedUser);
         }
     }
 }

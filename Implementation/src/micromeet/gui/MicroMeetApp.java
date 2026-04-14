@@ -2,6 +2,7 @@ package micromeet.gui;
 
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
+import micromeet.entity.User;
 import micromeet.repository.MeetupRepository;
 import micromeet.repository.UserRepository;
 import micromeet.service.AuthService;
@@ -35,9 +36,14 @@ public class MicroMeetApp {
         loginFrame.setVisible(true);
     }
 
-    public void showDashboard() {
+    public void showDashboard(User loggedInUser) {
         DashboardFrame dashboardFrame =
-                new DashboardFrame(userRepository, meetupRepository, profileService, meetupService, notificationService);
+                new DashboardFrame(
+                        loggedInUser,
+                        profileService,
+                        meetupService,
+                        notificationService,
+                        this::start);
         dashboardFrame.setVisible(true);
     }
 
