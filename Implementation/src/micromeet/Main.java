@@ -1,7 +1,12 @@
 package micromeet;
+
+import micromeet.entity.Meetup;
+import micromeet.entity.User;
+import micromeet.repository.MeetupRepository;
+import micromeet.repository.UserRepository;
+
 public class Main {
     public static void main(String[] args) {
-
         // Test repositories
         UserRepository userRepo = new UserRepository();
         userRepo.seedSampleUsers();
