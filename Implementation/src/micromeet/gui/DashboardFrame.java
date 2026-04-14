@@ -119,7 +119,7 @@ public class DashboardFrame extends JFrame {
     }
 
     private void openCreateMeetupPanel() {
-        CreateMeetupPanel panel = new CreateMeetupPanel(meetupService);
+        CreateMeetupPanel panel = new CreateMeetupPanel(meetupService, loggedInUser);
         showPanelDialog("Create Meetup", panel, 520, 320);
     }
 
