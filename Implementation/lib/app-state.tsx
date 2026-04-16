@@ -6,10 +6,13 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { demoMeetups, demoNotifications, demoUsers } from "@/data/mock-data";
+import { emitToast } from "@/lib/toast-bus";
 import type {
+  AvailabilityStatus,
   Meetup,
   Notification,
   NotificationType,
@@ -60,6 +63,11 @@ type AppStateContextType = {
   sendUpdateNotification: (meetupId: string, message: string) => void;
   getMeetupById: (meetupId: string) => Meetup | undefined;
   getUserById: (userId: string) => User | undefined;
+  resolveUserPresence: (user: User) => AvailabilityStatus;
+  setCurrentUserPresence: (status: AvailabilityStatus) => void;
+  markNotificationRead: (notificationId: string) => void;
+  markAllNotificationsRead: () => void;
+  spotlightMeetupId: string | null;
 };
 
 const AppStateContext = createContext<AppStateContextType | null>(null);
@@ -76,6 +84,13 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   const [meetups, setMeetups] = useState<Meetup[]>(demoMeetups);
   const [notifications, setNotifications] = useState<Notification[]>(demoNotifications);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [simulatedPresence, setSimulatedPresence] = useState<
+    Partial<Record<string, AvailabilityStatus>>
+  >({});
+  const [spotlightMeetupId, setSpotlightMeetupId] = useState<string | null>(null);
+  const spotlightClearRef = useRef<number | null>(null);
+
+  const makeId = useCallback((prefix: string) => `${prefix}-${crypto.randomUUID()}`, []);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -110,6 +125,12 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     () => users.find((user) => user.id === currentUserId) ?? null,
     [users, currentUserId]
   );
+
+  useEffect(() => {
+    if (!currentUserId) {
+      setSimulatedPresence({});
+    }
+  }, [currentUserId]);
 
   const login = useCallback(
     (username: string, password: string) => {
@@ -168,20 +189,20 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
             ...user,
             preferences: [
               ...user.preferences,
-              { id: `pref-${Date.now()}`, key: key.trim(), value: value.trim() },
+              { id: makeId("pref"), key: key.trim(), value: value.trim() },
             ],
           };
         })
       );
       return true;
     },
-    [currentUserId]
+    [currentUserId, makeId]
   );
 
   const addNotification = useCallback((type: NotificationType, message: string) => {
     setNotifications((prev) => [
       {
-        id: `n-${Date.now()}`,
+        id: makeId("n"),
         type,
         message,
         createdAt: "just now",
@@ -189,6 +210,26 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       },
       ...prev,
     ]);
+  }, [makeId]);
+
+  const flashMeetupSpotlight = useCallback((meetupId: string) => {
+    if (typeof window === "undefined") return;
+    if (spotlightClearRef.current) {
+      window.clearTimeout(spotlightClearRef.current);
+    }
+    setSpotlightMeetupId(meetupId);
+    spotlightClearRef.current = window.setTimeout(() => {
+      setSpotlightMeetupId(null);
+      spotlightClearRef.current = null;
+    }, 2800);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (spotlightClearRef.current && typeof window !== "undefined") {
+        window.clearTimeout(spotlightClearRef.current);
+      }
+    };
   }, []);
 
   const createMeetup = useCallback(
@@ -202,7 +243,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     }) => {
       if (!currentUserId) return null;
       const newMeetup: Meetup = {
-        id: `meetup-${Date.now()}`,
+        id: makeId("meetup"),
         title: payload.title.trim(),
         activityType: payload.activityType,
         time: payload.time.trim(),
@@ -212,7 +253,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         location: { label: payload.locationLabel.trim(), city: "Atlanta" },
         participants: [
           {
-            id: `part-${Date.now()}`,
+            id: makeId("part"),
             userId: currentUserId,
             status: "ACCEPTED",
             joinedAt: "just now",
@@ -222,9 +263,15 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       };
       setMeetups((prev) => [newMeetup, ...prev]);
       addNotification("SYSTEM_UPDATE", `Meetup "${newMeetup.title}" created successfully.`);
+      flashMeetupSpotlight(newMeetup.id);
+      emitToast({
+        title: "New meetup created successfully",
+        description: `"${newMeetup.title}" is live in your feed.`,
+        variant: "success",
+      });
       return newMeetup;
     },
-    [currentUserId, addNotification]
+    [currentUserId, addNotification, flashMeetupSpotlight, makeId]
   );
 
   const editMeetup = useCallback(
@@ -248,10 +295,19 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       setMeetups((prev) =>
         prev.map((meetup) => (meetup.id === meetupId ? updatedMeetup : meetup))
       );
-      addNotification("MEETUP_UPDATED", `Meetup "${updatedMeetup.title}" was updated by the host.`);
+      addNotification(
+        "MEETUP_UPDATED",
+        `Meetup "${updatedMeetup.title}" was updated by the host.`
+      );
+      flashMeetupSpotlight(updatedMeetup.id);
+      emitToast({
+        title: "Meetup updated successfully",
+        description: "Changes are synced across the feed and detail views.",
+        variant: "success",
+      });
       return updatedMeetup;
     },
-    [addNotification, meetups]
+    [addNotification, meetups, flashMeetupSpotlight]
   );
 
   const manageParticipants = useCallback(
@@ -273,7 +329,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         : [
             ...existingMeetup.participants,
             {
-              id: `part-${Date.now()}`,
+              id: makeId("part"),
               userId,
               status: action === "APPROVE" ? "ACCEPTED" : "REQUESTED",
               joinedAt: "just now",
@@ -285,13 +341,32 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         prev.map((meetup) => (meetup.id === meetupId ? updatedMeetup : meetup))
       );
 
-      addNotification(
-        action === "APPROVE" ? "APPROVAL_SENT" : "INVITE_SENT",
-        `${action} action applied for user ${userId} in meetup ${updatedMeetup.id}.`
-      );
+      const target = users.find((user) => user.id === userId);
+      const targetName = target?.name ?? userId;
+      if (action === "INVITE") {
+        addNotification(
+          "INVITE_SENT",
+          `Invitation sent to ${targetName} for "${updatedMeetup.title}".`
+        );
+        emitToast({
+          title: "Invitation sent",
+          description: `${targetName} will see this in their notifications.`,
+          variant: "info",
+        });
+      } else {
+        addNotification(
+          "APPROVAL_SENT",
+          `${targetName} was approved for "${updatedMeetup.title}".`
+        );
+        emitToast({
+          title: "Participant approved",
+          description: `${targetName} is confirmed for this meetup.`,
+          variant: "success",
+        });
+      }
       return updatedMeetup;
     },
-    [addNotification, meetups]
+    [addNotification, meetups, users, makeId]
   );
 
   const respondToRequest = useCallback(
@@ -309,7 +384,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         : [
             ...existingMeetup.participants,
             {
-              id: `part-${Date.now()}`,
+              id: makeId("part"),
               userId,
               status: newStatus,
               joinedAt: "just now",
@@ -321,15 +396,43 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         prev.map((meetup) => (meetup.id === meetupId ? updatedMeetup : meetup))
       );
 
-      addNotification("JOIN_RESPONSE", `${userId} selected ${choice} for meetup ${updatedMeetup.id}.`);
+      const actor = users.find((user) => user.id === userId);
+      const actorName = actor?.name ?? userId;
+      if (choice === "ACCEPT") {
+        addNotification(
+          "JOIN_RESPONSE",
+          `${actorName} accepted the join request for "${updatedMeetup.title}".`
+        );
+        emitToast({
+          title: "Join request accepted",
+          description: `You're in for "${updatedMeetup.title}".`,
+          variant: "success",
+        });
+      } else {
+        addNotification(
+          "JOIN_RESPONSE",
+          `${actorName} declined the join request for "${updatedMeetup.title}".`
+        );
+        emitToast({
+          title: "Join request declined",
+          description: `No worries — you can explore other meetups.`,
+          variant: "warning",
+        });
+      }
       return updatedMeetup;
     },
-    [addNotification, meetups]
+    [addNotification, meetups, users, makeId]
   );
 
   const sendUpdateNotification = useCallback(
     (meetupId: string, message: string) => {
-      addNotification("MEETUP_UPDATED", `Meetup ${meetupId}: ${message.trim()}`);
+      const trimmed = message.trim();
+      addNotification("MEETUP_UPDATED", `Meetup ${meetupId}: ${trimmed}`);
+      emitToast({
+        title: "Meetup update posted",
+        description: trimmed,
+        variant: "info",
+      });
     },
     [addNotification]
   );
@@ -344,12 +447,92 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     [users]
   );
 
+  const resolveUserPresence = useCallback(
+    (user: User) => {
+      if (user.id === currentUserId) {
+        const live = users.find((entry) => entry.id === user.id);
+        return live?.availability ?? user.availability;
+      }
+      return simulatedPresence[user.id] ?? user.availability;
+    },
+    [currentUserId, users, simulatedPresence]
+  );
+
+  const setCurrentUserPresence = useCallback(
+    (status: AvailabilityStatus) => {
+      if (!currentUserId) return;
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.id === currentUserId ? { ...user, availability: status } : user
+        )
+      );
+    },
+    [currentUserId]
+  );
+
+  const markNotificationRead = useCallback((notificationId: string) => {
+    setNotifications((prev) =>
+      prev.map((notification) =>
+        notification.id === notificationId ? { ...notification, read: true } : notification
+      )
+    );
+  }, []);
+
+  const markAllNotificationsRead = useCallback(() => {
+    setNotifications((prev) => prev.map((notification) => ({ ...notification, read: true })));
+  }, []);
+
+  useEffect(() => {
+    if (!currentUserId || typeof window === "undefined") {
+      return;
+    }
+    const others = users.filter((user) => user.id !== currentUserId);
+    if (!others.length) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      if (Math.random() < 0.36) {
+        return;
+      }
+      const pick = others[Math.floor(Math.random() * others.length)];
+      setSimulatedPresence((prev) => {
+        const effective = prev[pick.id] ?? pick.availability;
+        const next: AvailabilityStatus = effective === "ONLINE" ? "OFFLINE" : "ONLINE";
+
+        queueMicrotask(() => {
+          if (next === "ONLINE") {
+            addNotification("NEARBY_PRESENCE", `${pick.name} is now online nearby.`);
+            emitToast({
+              title: `${pick.name} is now online nearby`,
+              description: "New active user detected nearby.",
+              variant: "info",
+            });
+          } else if (Math.random() > 0.45) {
+            emitToast({
+              title: `${pick.name} went offline nearby`,
+              description: "They may have stepped away.",
+              variant: "default",
+            });
+          }
+        });
+
+        return { ...prev, [pick.id]: next };
+      });
+    }, 5600);
+
+    return () => window.clearInterval(intervalId);
+  }, [currentUserId, users, addNotification]);
+
   const nearbyOnlineUsers = useMemo(
     () =>
-      users.filter(
-        (user) => user.availability === "ONLINE" && (!currentUser || user.id !== currentUser.id)
-      ),
-    [users, currentUser]
+      users.filter((user) => {
+        if (!currentUser || user.id === currentUser.id) {
+          return false;
+        }
+        return resolveUserPresence(user) === "ONLINE";
+      }),
+    [users, currentUser, resolveUserPresence]
   );
 
   const activeMeetups = useMemo(
@@ -392,6 +575,11 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       sendUpdateNotification,
       getMeetupById,
       getUserById,
+      resolveUserPresence,
+      setCurrentUserPresence,
+      markNotificationRead,
+      markAllNotificationsRead,
+      spotlightMeetupId,
     }),
     [
       users,
@@ -413,6 +601,11 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       sendUpdateNotification,
       getMeetupById,
       getUserById,
+      resolveUserPresence,
+      setCurrentUserPresence,
+      markNotificationRead,
+      markAllNotificationsRead,
+      spotlightMeetupId,
     ]
   );
 

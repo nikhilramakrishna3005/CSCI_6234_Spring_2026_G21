@@ -7,11 +7,12 @@ import { StatusBadge } from "@/components/status-badge";
 import { useAppState } from "@/lib/app-state";
 
 const colors: Record<string, string> = {
-  MEETUP_UPDATED: "text-violet-700",
-  INVITE_SENT: "text-sky-700",
+  MEETUP_UPDATED: "text-rose-800",
+  INVITE_SENT: "text-rose-800",
   APPROVAL_SENT: "text-emerald-700",
   JOIN_RESPONSE: "text-amber-700",
   SYSTEM_UPDATE: "text-slate-700",
+  NEARBY_PRESENCE: "text-rose-800",
 };
 
 export default function NotificationsPage() {
@@ -21,7 +22,7 @@ export default function NotificationsPage() {
 
   return (
     <LayoutShell
-      title="9. Send Update Notifications"
+      title="Notifications"
       subtitle="A clean, scrollable notification center with timestamped social updates."
     >
       <section className="card-base p-6">
@@ -66,7 +67,7 @@ export default function NotificationsPage() {
         {notifications.map((notification) => (
           <article
             key={notification.id}
-            className="group rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white to-slate-50/70 p-5 shadow-sm transition hover:border-violet-200 hover:shadow-md"
+            className="group rounded-3xl border border-slate-200/80 bg-gradient-to-b from-white to-slate-50/70 p-5 shadow-sm transition hover:border-rose-200 hover:shadow-md"
           >
             <div className="mb-3 flex items-center justify-between">
               <StatusBadge label={notification.type} />

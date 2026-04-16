@@ -30,17 +30,17 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-10">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.22),transparent_58%)]" />
-      <div className="pointer-events-none absolute -left-20 bottom-10 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl" />
-      <div className="pointer-events-none absolute -right-16 top-16 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 py-10">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(190,18,60,0.22),transparent_58%)]" />
+      <div className="pointer-events-none absolute -left-20 bottom-10 h-72 w-72 rounded-full bg-rose-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute -right-16 top-16 h-72 w-72 rounded-full bg-red-500/15 blur-3xl" />
 
       <form
         onSubmit={onSubmit}
         className="relative w-full max-w-md rounded-4xl border border-white/20 bg-slate-900/85 p-8 shadow-[0_28px_80px_rgba(15,23,42,0.7)] backdrop-blur-xl md:p-10"
       >
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500 to-indigo-500 text-xl font-bold text-white">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-900 to-rose-600 text-xl font-bold text-white">
             MM
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-white">MicroMeet</h1>
@@ -55,7 +55,7 @@ export default function LoginPage() {
             <input
               value={username}
               onChange={(event) => setUsername(event.target.value)}
-              className="mt-2 w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white outline-none transition focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/20"
+              className="mt-2 w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white outline-none transition focus:border-rose-300 focus:ring-4 focus:ring-rose-500/20"
             />
           </label>
           <label className="block text-sm font-medium text-slate-200">
@@ -64,14 +64,14 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-2 w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white outline-none transition focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/20"
+              className="mt-2 w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white outline-none transition focus:border-rose-300 focus:ring-4 focus:ring-rose-500/20"
             />
           </label>
           <button
             type="submit"
-            className="inline-flex w-full items-center justify-center rounded-2xl bg-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-700/30 transition hover:-translate-y-0.5 hover:bg-indigo-400"
+            className="inline-flex w-full items-center justify-center rounded-2xl bg-rose-700 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-900/30 transition hover:-translate-y-0.5 hover:bg-rose-600"
           >
-            Authenticate User
+            Log in
           </button>
         </div>
 
@@ -81,8 +81,8 @@ export default function LoginPage() {
           </p>
         ) : null}
 
-        <div className="mt-5 rounded-xl border border-indigo-400/30 bg-indigo-500/10 px-4 py-3 text-xs text-indigo-200">
-          <p className="font-semibold uppercase tracking-wide text-indigo-100">Demo credentials</p>
+        <div className="mt-5 rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-xs text-rose-200">
+          <p className="font-semibold uppercase tracking-wide text-rose-100">Demo credentials</p>
           <p className="mt-1">host1 / pass123</p>
           <p>user1 / pass123</p>
           <p>user2 / pass123</p>

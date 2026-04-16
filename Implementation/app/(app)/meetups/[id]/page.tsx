@@ -1,16 +1,22 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useParams } from "next/navigation";
 import { LayoutShell } from "@/components/layout-shell";
 import { SectionHeader } from "@/components/section-header";
 import { StatusBadge } from "@/components/status-badge";
 import { UserAvatar } from "@/components/user-avatar";
 import { useAppState } from "@/lib/app-state";
+import { emitToast } from "@/lib/toast-bus";
 
 export default function MeetupDetailsPage() {
   const params = useParams<{ id: string }>();
   const { meetups, users, currentUser, manageParticipants, respondToRequest } = useAppState();
+  const hintedRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    hintedRef.current = null;
+  }, [params.id]);
 
   const meetup = meetups.find((item) => item.id === params.id);
   const host = users.find((user) => user.id === meetup?.hostUserId);
@@ -25,6 +31,39 @@ export default function MeetupDetailsPage() {
       .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
   }, [meetup, users]);
 
+  const canHostManage = Boolean(meetup && currentUser?.id === meetup.hostUserId);
+
+  useEffect(() => {
+    if (!meetup || !currentUser) return;
+    const key = `${meetup.id}:${currentUser.id}`;
+    if (hintedRef.current === key) return;
+
+    if (canHostManage) {
+      const pendingJoin = meetup.participants.some(
+        (participant) =>
+          participant.status === "REQUESTED" && participant.userId !== currentUser.id,
+      );
+      if (pendingJoin) {
+        hintedRef.current = key;
+        emitToast({
+          title: "You have a new join request",
+          description: "Approve or follow up from the participant list.",
+          variant: "info",
+        });
+      }
+    } else {
+      const self = meetup.participants.find((participant) => participant.userId === currentUser.id);
+      if (self?.status === "REQUESTED") {
+        hintedRef.current = key;
+        emitToast({
+          title: "Join request pending",
+          description: "The host will review your spot shortly.",
+          variant: "warning",
+        });
+      }
+    }
+  }, [meetup, currentUser, canHostManage]);
+
   if (!meetup) {
     return (
       <LayoutShell title="Meetup Details">
@@ -35,11 +74,9 @@ export default function MeetupDetailsPage() {
     );
   }
 
-  const canHostManage = currentUser?.id === meetup.hostUserId;
-
   return (
     <LayoutShell
-      title="4. View Meetup Details"
+      title="Meetup Details"
       subtitle="Detailed meetup view with host, participants, and role-based actions."
     >
       <SectionHeader title={meetup.title} subtitle={meetup.description} />
@@ -48,7 +85,7 @@ export default function MeetupDetailsPage() {
         <section className="card-base space-y-5 p-6">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-violet-600">{meetup.activityType}</p>
+              <p className="text-sm font-medium text-rose-800">{meetup.activityType}</p>
               <h2 className="text-2xl font-bold text-slate-900">{meetup.title}</h2>
             </div>
             <StatusBadge label={meetup.visibility} />

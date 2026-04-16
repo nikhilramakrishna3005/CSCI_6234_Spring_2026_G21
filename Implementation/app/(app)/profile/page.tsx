@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LayoutShell } from "@/components/layout-shell";
+import { PresenceToggle } from "@/components/presence-toggle";
 import { SectionHeader } from "@/components/section-header";
 import { useAppState } from "@/lib/app-state";
 import type { AvailabilityStatus } from "@/lib/types";
@@ -18,6 +19,13 @@ export default function ProfilePage() {
   const [prefKey, setPrefKey] = useState("");
   const [prefValue, setPrefValue] = useState("");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (!currentUser) return;
+    setName(currentUser.name);
+    setEmail(currentUser.email);
+    setAvailability(currentUser.availability);
+  }, [currentUser]);
 
   if (!currentUser) return null;
 
@@ -43,9 +51,11 @@ export default function ProfilePage() {
 
   return (
     <LayoutShell
-      title="2. Manage Profile & Preferences"
+      title="Profile & Preferences"
       subtitle="Update your identity, availability, and activity preferences."
     >
+
+      <PresenceToggle className="mb-2" />
 
       <div className="grid gap-6 lg:grid-cols-[1.2fr,1fr]">
         <section className="card-base space-y-4 p-6">
@@ -124,7 +134,7 @@ export default function ProfilePage() {
       </div>
 
       {message ? (
-        <p className="mt-6 rounded-2xl border border-violet-200 bg-violet-50/90 px-4 py-3 text-sm font-medium text-violet-700">
+        <p className="mt-6 rounded-2xl border border-rose-200 bg-rose-50/90 px-4 py-3 text-sm font-medium text-rose-800">
           {message}
         </p>
       ) : null}

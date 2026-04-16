@@ -22,11 +22,11 @@ export default function ResponsesPage() {
 
   return (
     <LayoutShell
-      title="8. Respond to Join Request"
+      title="Join Response"
       subtitle="Accept or decline requests and visualize participation updates."
     >
       <SectionHeader
-        title="8. Respond to Join Request"
+        title="Respond to Join Request"
         subtitle="Capture participant choices with clear visual feedback."
       />
 
@@ -37,7 +37,7 @@ export default function ResponsesPage() {
             <select
               value={meetupId}
               onChange={(event) => setMeetupId(event.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-rose-300 focus:bg-white focus:ring-4 focus:ring-rose-100"
             >
               {meetups.map((meetup) => (
                 <option key={meetup.id} value={meetup.id}>
@@ -52,7 +52,7 @@ export default function ResponsesPage() {
             <select
               value={userId}
               onChange={(event) => setUserId(event.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-rose-300 focus:bg-white focus:ring-4 focus:ring-rose-100"
             >
               {users.map((user) => (
                 <option key={user.id} value={user.id}>
@@ -80,7 +80,7 @@ export default function ResponsesPage() {
       </section>
 
       {message ? (
-        <p className="mt-5 rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-700">
+        <p className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
           {message}
         </p>
       ) : null}

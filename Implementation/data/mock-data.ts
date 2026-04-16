@@ -12,7 +12,7 @@ export const demoUsers: User[] = [
       { id: "p1", key: "activity", value: "COFFEE" },
       { id: "p2", key: "vibe", value: "Networking" },
     ],
-    avatarGradient: "from-indigo-500 to-violet-500",
+    avatarGradient: "from-red-900 to-rose-700",
   },
   {
     id: "u-user-1",
@@ -51,7 +51,7 @@ export const demoUsers: User[] = [
       { id: "p7", key: "activity", value: "FOOD" },
       { id: "p8", key: "radius", value: "5km" },
     ],
-    avatarGradient: "from-sky-500 to-cyan-500",
+    avatarGradient: "from-rose-800 to-red-700",
   },
 ];
 

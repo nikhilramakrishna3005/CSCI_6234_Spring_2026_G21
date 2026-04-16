@@ -17,7 +17,7 @@ const allActivities: Array<ActivityType | "ALL"> = [
 ];
 
 export default function MeetupsPage() {
-  const { meetups, users } = useAppState();
+  const { meetups, getUserById, spotlightMeetupId } = useAppState();
   const [activity, setActivity] = useState<ActivityType | "ALL">("ALL");
 
   const filtered = useMemo(() => {
@@ -27,7 +27,7 @@ export default function MeetupsPage() {
 
   return (
     <LayoutShell
-      title="3. View Active / Upcoming Meetups"
+      title="Active / Upcoming Meetups"
       subtitle="Explore active and upcoming meetup cards with activity filters."
     >
       <SectionHeader
@@ -42,8 +42,8 @@ export default function MeetupsPage() {
             onClick={() => setActivity(item)}
             className={`rounded-full px-4 py-2 text-sm font-medium transition ${
               activity === item
-                ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-violet-600/30"
-                : "border border-slate-200 bg-white text-slate-700 hover:border-violet-300 hover:bg-violet-50"
+                ? "bg-gradient-to-r from-red-950 to-rose-800 text-white shadow-lg shadow-rose-900/20"
+                : "border border-slate-200 bg-white text-slate-700 hover:border-rose-300 hover:bg-rose-50"
             }`}
           >
             {item}
@@ -53,7 +53,12 @@ export default function MeetupsPage() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {filtered.map((meetup) => (
-          <MeetupCard key={meetup.id} meetup={meetup} />
+          <MeetupCard
+            key={meetup.id}
+            meetup={meetup}
+            hostName={getUserById(meetup.hostUserId)?.name}
+            highlight={spotlightMeetupId === meetup.id}
+          />
         ))}
       </div>
     </LayoutShell>

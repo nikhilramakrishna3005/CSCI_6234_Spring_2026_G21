@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LayoutShell } from "@/components/layout-shell";
 import { SectionHeader } from "@/components/section-header";
 import { useAppState } from "@/lib/app-state";
@@ -16,6 +16,15 @@ export default function EditMeetupPage() {
   const [description, setDescription] = useState(selected?.description ?? "");
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    const next = meetups.find((meetup) => meetup.id === selectedMeetupId);
+    if (!next) return;
+    setTitle(next.title);
+    setTime(next.time);
+    setCapacity(next.capacity);
+    setDescription(next.description);
+  }, [meetups, selectedMeetupId]);
+
   const hydrateFromSelected = () => {
     if (!selected) return;
     setTitle(selected.title);
@@ -30,12 +39,12 @@ export default function EditMeetupPage() {
       setMessage("Unable to save meetup changes.");
       return;
     }
-    setMessage(`Meetup ${updated.id} updated.`);
+    setMessage("");
   };
 
   return (
     <LayoutShell
-      title="6. Edit Meetup"
+      title="Edit Meetup"
       subtitle="Preload a meetup and tune details with confidence."
     >
       <section className="card-base space-y-6 p-6 md:p-7">
@@ -119,7 +128,7 @@ export default function EditMeetupPage() {
       </section>
 
       {message ? (
-        <p className="mt-4 rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-700">
+        <p className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
           {message}
         </p>
       ) : null}

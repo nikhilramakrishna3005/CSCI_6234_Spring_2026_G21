@@ -24,7 +24,7 @@ export default function ParticipantsPage() {
 
   return (
     <LayoutShell
-      title="7. Invite / Approve Participants"
+      title="Participants"
       subtitle="Manage candidate users and pending requests with clear status actions."
     >
       <section className="card-base space-y-4 p-6">
@@ -33,7 +33,7 @@ export default function ParticipantsPage() {
           <select
             value={meetupId}
             onChange={(event) => setMeetupId(event.target.value)}
-            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-violet-300 focus:bg-white focus:ring-4 focus:ring-violet-100"
+            className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-rose-300 focus:bg-white focus:ring-4 focus:ring-rose-100"
           >
             {meetups.map((meetup) => (
               <option key={meetup.id} value={meetup.id}>
@@ -66,7 +66,7 @@ export default function ParticipantsPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => onAction(user.id, "INVITE")}
-                  className="flex-1 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-semibold text-indigo-700 hover:bg-indigo-100"
+                  className="flex-1 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-800 hover:bg-rose-100"
                 >
                   Invite
                 </button>
@@ -83,7 +83,7 @@ export default function ParticipantsPage() {
       </div>
 
       {message ? (
-        <p className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-700">
+        <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
           {message}
         </p>
       ) : null}

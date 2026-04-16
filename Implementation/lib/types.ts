@@ -9,7 +9,8 @@ export type NotificationType =
   | "INVITE_SENT"
   | "APPROVAL_SENT"
   | "JOIN_RESPONSE"
-  | "SYSTEM_UPDATE";
+  | "SYSTEM_UPDATE"
+  | "NEARBY_PRESENCE";
 
 export type Preference = {
   id: string;

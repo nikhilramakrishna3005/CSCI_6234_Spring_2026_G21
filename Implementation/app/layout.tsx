@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastProvider } from "@/components/toast-provider";
 import { AppStateProvider } from "@/lib/app-state";
 
 export const metadata: Metadata = {
@@ -13,9 +14,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <AppStateProvider>{children}</AppStateProvider>
+        <ToastProvider>
+          <AppStateProvider>{children}</AppStateProvider>
+        </ToastProvider>
       </body>
     </html>
   );

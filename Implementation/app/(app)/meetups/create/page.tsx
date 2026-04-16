@@ -43,7 +43,7 @@ export default function CreateMeetupPage() {
     }
 
     setIsError(false);
-    setMessage(`Success! Created meetup "${created.title}".`);
+    setMessage("");
     setTitle("");
     setDescription("");
     setLocationLabel("");
@@ -51,7 +51,7 @@ export default function CreateMeetupPage() {
 
   return (
     <LayoutShell
-      title="6. Create Meetup"
+      title="Create Meetup"
       subtitle="Launch a polished, social-ready meetup in seconds."
     >
       <section className="card-base p-8">
